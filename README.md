@@ -1,4 +1,4 @@
-# TODO-App-Flask using flask, docker and kubernetes
+# TODO-App using flask, docker and kubernetes
 
 To use app locally or directly with containers change app.py with
 app.config[“MONGO_URI”] = “mongodb://localhost:27017/dev”
