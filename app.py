@@ -21,13 +21,12 @@ def index():
 
 class ToDo(Resource):
     def get(self):
-        _todos = db.todo.find()
-        item = {}
+        tasks = db.task.find()
         data = []
-        for task in _todos:
+        for task in tasks:
             item = {
                 'id': str(task['_id']),
-                'todo': task['todo'],
+                "task": task["task"],
                 'status': task['status']
             }
             data.append(item)
@@ -36,38 +35,38 @@ class ToDo(Resource):
     def post(self):
         data = request.get_json(force=True)
         item = {
-            'todo': data['todo'],
+            "task": data["task"],
             'status': False
         }
-        db.todo.insert_one(item)
+        db.task.insert_one(item)
         return make_response(jsonify(status=True,message='To-do saved successfully!'), 201)
 
     def delete(self):
-        db.todo.delete_many({})
+        db.task.delete_many({})
         return make_response(jsonify(message='TODO Cleared!'), 204)    
 
 
 class TodoTask(Resource):
     def get(self, id):
-        data= db.todo.find_one({"_id": ObjectId(id)}) 
+        data= db.task.find_one({"_id": ObjectId(id)}) 
         item = {
                 'id': str(data['_id']),
-                'todo': data['todo'],
+                'task': data['task'],
                 'status': data['status']
             }
         return make_response(jsonify(item), 201)
 
     def delete(self,id):
-        db.todo.delete_one({"_id": ObjectId(id)}) 
+        db.task.delete_one({"_id": ObjectId(id)}) 
         return make_response(jsonify(message='Deleted Task successfully!'), 204)
     
     def put(self, id):
-        task=db.todo.find_one({"_id": ObjectId(id)}) 
-        if task:
-            if task["status"]==True:    
-                db.todo.update_one({"_id": ObjectId(id)}, {"$set": {"status":False}})    
+        task1=db.task.find_one({"_id": ObjectId(id)}) 
+        if task1:
+            if task1["status"]==True:    
+                db.task.update_one({"_id": ObjectId(id)}, {"$set": {"status":False}})    
             else:    
-                db.todo.update_one({"_id": ObjectId(id)}, {"$set": {"status":True}})    
+                db.task.update_one({"_id": ObjectId(id)}, {"$set": {"status":True}})    
             return make_response(jsonify(status=True,message='Status Updated!'), 204)
         else:
             abort(404, message="Task doesn't exist")
